@@ -3,7 +3,8 @@
 > Versión: 0.1  
 > Fecha: 2026-10-04  
 > Estado: listo para ejecución  
-> Base: `01_especificacion_modulo_dolibarr_supportcandy.md`, `03_arquitectura_paralela_idempotente_parametrizable.md`, `04_matriz_parametros_brand_vs_generic.md`
+> Base: `01_especificacion_modulo_dolibarr_supportcandy.md`, `03_arquitectura_paralela_idempotente_parametrizable.md`, `04_matriz_parametros_brand_vs_generic.md`  
+> Scope actual: **implementación Letsfix-first**. La generalización queda diferida a futuras breaking changes.
 
 ## 1. Marco de trabajo
 
@@ -28,10 +29,10 @@ Regla: no se desarrolla ninguna funcionalidad sin TDD de fase aprobado.
 - Instalación correcta.
 - Desinstalación correcta.
 - Reinstalación idempotente (sin duplicados de tablas/seed/extrafields).
-- Arranque correcto en `profile=brand` y `profile=generic`.
+- Arranque correcto en perfil Letsfix (`module_slug=letsfixtickets`).
 
 **Salida**
-- CI smoke en verde en ambos perfiles.
+- CI smoke en verde para el perfil Letsfix.
 
 ---
 
@@ -41,8 +42,8 @@ Regla: no se desarrolla ninguna funcionalidad sin TDD de fase aprobado.
 - Eliminar hardcode de marca y centralizar configuración.
 
 **TDD de fase**
-- Resuelve `module_slug=letsfixtickets` para `brand`.
-- Resuelve `module_slug=ticketflow` para `generic`.
+- Resuelve `module_slug=letsfixtickets` para entorno Letsfix.
+- No se implementa aún `module_slug=ticketflow` (queda en backlog de generalización).
 - Fallbacks por defecto correctos.
 - Parámetros inválidos devuelven error controlado.
 - Política “sin strings de marca en core” en verde.
@@ -62,7 +63,7 @@ Regla: no se desarrolla ninguna funcionalidad sin TDD de fase aprobado.
 - Transiciones inválidas bloqueadas.
 - Visibilidad de notas internas restringida.
 - Permisos por rol aplicados (cliente/técnico/admin).
-- Render de labels dependiente de perfil sin cambiar semántica.
+- Render de labels operativos Letsfix sin romper semántica de estados.
 
 **Salida**
 - Flujo de ticket end-to-end en verde.
@@ -109,7 +110,7 @@ Regla: no se desarrolla ninguna funcionalidad sin TDD de fase aprobado.
 - Preparar producción con calidad y operación controlada.
 
 **TDD de fase**
-- Regresión completa en ambos perfiles.
+- Regresión completa del perfil Letsfix.
 - Pruebas de carga mínima en endpoints críticos.
 - Pruebas de seguridad básicas.
 - Upgrade/reinstalación mantienen idempotencia.
@@ -138,5 +139,14 @@ Si un gate falla, no se avanza de fase.
 
 1. Todas las fases cierran gates 1..5.
 2. No hay duplicados por reintentos en instalación/API/importación.
-3. Ambos perfiles (`brand` y `generic`) pasan la suite crítica.
-4. El perfil genérico queda apto para TFM y el brand para operación real.
+3. El perfil Letsfix pasa la suite crítica end-to-end.
+4. El entregable específico de TFM sobre Letsfix queda apto para defensa y operación.
+
+## 6. Nota de alcance (acordada)
+
+- Este plan ejecuta desarrollo **específico para Letsfix**.
+- La versión genérica se tratará después, en futuras breaking changes.
+- Los 8 puntos abiertos de arranque quedan aparcados como pendientes para retomar más adelante.
+
+
+
