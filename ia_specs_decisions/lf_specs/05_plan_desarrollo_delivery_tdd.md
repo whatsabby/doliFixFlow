@@ -150,3 +150,50 @@ Si un gate falla, no se avanza de fase.
 
 
 
+## 7. Decisiones de arranque (confirmadas por negocio)
+
+Fecha de captura: 2026-10-04
+
+1. **Versiones objetivo**
+   - Instalado actual: Dolibarr `20.0.2`.
+   - Objetivo principal: diseñar e implementar para la rama actual superior indicada (`24.0.2`), manteniendo compatibilidad funcional hacia `20.0.2`.
+   - Estrategia técnica: *compatibility-first* (feature detection y degradación controlada cuando aplique).
+
+2. **Módulo Ticket nativo**
+   - Estado: activado por negocio.
+   - Uso previo: no utilizado operativamente (se usaba SupportCandy).
+   - Decisión: reutilizar nativo de Dolibarr como base y extender encima (Dolibarr-first).
+
+3. **Entorno**
+   - Necesidad crítica: crear entorno de desarrollo/staging aislado antes de tocar producción.
+   - Restricción: no asumir riesgo sobre el Dolibarr productivo actual.
+
+4. **Alcance de migración**
+   - Migración de histórico: **completo**.
+
+5. **Aprobación de gates**
+   - Responsable de aprobación: **Claudia (negocio)**.
+   - Modelo operativo: el agente entrega artefactos; negocio descarga/instala/prueba/confirma.
+
+6. **Prioridad de ejecución**
+   - Arranque por **Fase 0**.
+
+## 8. Pendientes de cierre rápido (para ejecutar Fase 0 sin bloqueo)
+
+Quedan dos definiciones funcionales simplificadas para cerrar en el arranque:
+
+1. **Roles y permisos (punto 5 original)**
+   - Propuesta mínima inicial:
+     - Cliente: crea ticket, ve sus tickets, responde, adjunta.
+     - Técnico: ve asignados, cambia estados permitidos, notas internas.
+     - Admin: acceso total, configuración, importador.
+     - Integración: permisos mínimos de API/import.
+
+2. **Contrato de idempotencia API (punto 6 original)**
+   - Propuesta mínima inicial:
+     - Requisito de `idempotency_key` en `POST`/`PUT` sensibles.
+     - TTL: `24h`.
+     - Misma key + mismo payload: misma respuesta lógica.
+     - Misma key + payload distinto: `409 Conflict`.
+
+Estas dos propuestas se usarán por defecto en Fase 0/Fase 1 salvo corrección explícita de negocio.
