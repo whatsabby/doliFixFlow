@@ -1,119 +1,119 @@
-﻿# Matriz de parámetros — `profile=brand` vs `profile=generic`
+﻿# Parameter Matrix — `profile=brand` vs `profile=generic`
 
-> Versión: 0.1  
-> Fecha: 2026-10-04  
-> Estado: lista para ejecución por fases  
-> Base: alineada con `01_especificacion_modulo_dolibarr_supportcandy.md` y estrategia dual
+> Version: 0.1  
+> Date: 2026-10-04  
+> Status: ready for phased execution  
+> Base: aligned with `01_especificacion_modulo_dolibarr_supportcandy.md` and dual-profile strategy
 
-## 1) Objetivo
+## 1) Objective
 
-Definir un catálogo único de parámetros para operar dos perfiles en paralelo sin bifurcar el core:
+Define a single parameter catalog to run two profiles in parallel without forking core code:
 
-- **Brand**: operación real (propio).
-- **Generic**: versión neutra para TFM/demostración.
+- **Brand**: real production operation (owned profile).
+- **Generic**: neutral profile for TFM/demo.
 
-Regla obligatoria: **ningún valor de marca en código core**; todo sale de configuración.
+Mandatory rule: **no brand values in core code**; everything must come from configuration.
 
-## 2) Convención de claves
+## 2) Key convention
 
-- Prefijo recomendado: `lf.`
-- Jerarquía: `dominio.subdominio.clave`
-- Tipos: `string`, `bool`, `int`, `enum`, `json`
-- Origen: `env`, `db_config`, `seed_catalog`, `runtime`
+- Recommended prefix: `lf.`
+- Hierarchy: `domain.subdomain.key`
+- Types: `string`, `bool`, `int`, `enum`, `json`
+- Source: `env`, `db_config`, `seed_catalog`, `runtime`
 
-## 3) Matriz principal
+## 3) Main matrix
 
-| Clave | Tipo | Brand (propio) | Generic (TFM) | Origen | Prioridad | Impacto |
+| Key | Type | Brand (owned) | Generic (TFM) | Source | Priority | Impact |
 |---|---|---|---|---|---|---|
-| `lf.profile.id` | enum | `brand` | `generic` | env | Alta | Routing global |
-| `lf.module.slug` | string | `letsfixtickets` | `ticketflow` | env | Alta | Rutas/API/nombre técnico |
-| `lf.module.display_name` | string | `Letsfix Tickets` | `Ticket Flow` | db_config | Alta | UI |
-| `lf.brand.enabled` | bool | `true` | `false` | env | Alta | Branding visible |
-| `lf.brand.company_name` | string | `Letsfix` | `Organización` | db_config | Alta | Textos |
-| `lf.brand.domain_label` | string | `letsfix.es` | `dominio-origen.local` | db_config | Media | Copys e inventario |
-| `lf.api.base_prefix` | string | `/api/letsfixtickets` | `/api/ticketflow` | env | Alta | Integraciones |
-| `lf.api.idempotency.enabled` | bool | `true` | `true` | env | Alta | Escrituras seguras |
-| `lf.api.idempotency.ttl_hours` | int | `24` | `24` | db_config | Alta | Reintentos |
-| `lf.api.idempotency.scope` | enum | `method+path+key` | `method+path+key` | env | Alta | Dedupe |
-| `lf.import.source_system` | string | `supportcandy` | `supportcandy` | env | Alta | Migración |
-| `lf.import.dry_run_default` | bool | `true` | `true` | db_config | Alta | Seguridad |
-| `lf.import.resume.enabled` | bool | `true` | `true` | env | Media | Recuperación de lotes |
-| `lf.import.conflict_policy` | enum | `update_allowed_fields` | `update_allowed_fields` | db_config | Alta | Idempotencia import |
-| `lf.security.internal_notes_hidden` | bool | `true` | `true` | env | Alta | Privacidad |
-| `lf.attachments.max_size_mb` | int | `20` | `20` | db_config | Media | Operación |
-| `lf.attachments.allowed_mime` | json | `[...]` | `[...]` | db_config | Media | Seguridad |
-| `lf.notifications.enabled` | bool | `true` | `true` | env | Media | Comunicación |
-| `lf.notifications.send_real_emails` | bool | `true` | `false` | env | Alta | Entorno demo/real |
-| `lf.audit.log_level` | enum | `info` | `info` | env | Media | Trazabilidad |
-| `lf.catalog.status.source` | enum | `seed+admin` | `seed+admin` | seed_catalog | Alta | Flujo operativo |
-| `lf.catalog.priority.source` | enum | `seed+admin` | `seed+admin` | seed_catalog | Media | Operación |
-| `lf.catalog.category.source` | enum | `seed+admin` | `seed+admin` | seed_catalog | Media | Operación |
-| `lf.ui.default_view` | string | `mis_tickets` | `all_open` | db_config | Baja | UX |
-| `lf.testing.dataset_mode` | enum | `masked_real` | `synthetic` | env | Alta | TFM/compliance |
+| `lf.profile.id` | enum | `brand` | `generic` | env | High | Global routing |
+| `lf.module.slug` | string | `letsfixtickets` | `ticketflow` | env | High | Routes/API/technical name |
+| `lf.module.display_name` | string | `Letsfix Tickets` | `Ticket Flow` | db_config | High | UI |
+| `lf.brand.enabled` | bool | `true` | `false` | env | High | Visible branding |
+| `lf.brand.company_name` | string | `Letsfix` | `Organization` | db_config | High | Texts |
+| `lf.brand.domain_label` | string | `letsfix.es` | `source-domain.local` | db_config | Medium | Copy and inventory |
+| `lf.api.base_prefix` | string | `/api/letsfixtickets` | `/api/ticketflow` | env | High | Integrations |
+| `lf.api.idempotency.enabled` | bool | `true` | `true` | env | High | Safe writes |
+| `lf.api.idempotency.ttl_hours` | int | `24` | `24` | db_config | High | Retries |
+| `lf.api.idempotency.scope` | enum | `method+path+key` | `method+path+key` | env | High | Dedupe |
+| `lf.import.source_system` | string | `supportcandy` | `supportcandy` | env | High | Migration |
+| `lf.import.dry_run_default` | bool | `true` | `true` | db_config | High | Safety |
+| `lf.import.resume.enabled` | bool | `true` | `true` | env | Medium | Batch recovery |
+| `lf.import.conflict_policy` | enum | `update_allowed_fields` | `update_allowed_fields` | db_config | High | Import idempotency |
+| `lf.security.internal_notes_hidden` | bool | `true` | `true` | env | High | Privacy |
+| `lf.attachments.max_size_mb` | int | `20` | `20` | db_config | Medium | Operations |
+| `lf.attachments.allowed_mime` | json | `[...]` | `[...]` | db_config | Medium | Security |
+| `lf.notifications.enabled` | bool | `true` | `true` | env | Medium | Communication |
+| `lf.notifications.send_real_emails` | bool | `true` | `false` | env | High | Demo vs production environment |
+| `lf.audit.log_level` | enum | `info` | `info` | env | Medium | Traceability |
+| `lf.catalog.status.source` | enum | `seed+admin` | `seed+admin` | seed_catalog | High | Operational flow |
+| `lf.catalog.priority.source` | enum | `seed+admin` | `seed+admin` | seed_catalog | Medium | Operations |
+| `lf.catalog.category.source` | enum | `seed+admin` | `seed+admin` | seed_catalog | Medium | Operations |
+| `lf.ui.default_view` | string | `my_tickets` | `all_open` | db_config | Low | UX |
+| `lf.testing.dataset_mode` | enum | `masked_real` | `synthetic` | env | High | TFM/compliance |
 
-## 4) Matriz de estados (semántica compartida)
+## 4) Status matrix (shared semantics)
 
-> La semántica de negocio debe ser común; cambia el etiquetado/branding visible cuando aplique.
+> Business semantics must be shared; only visible labeling/branding changes when needed.
 
-| `status_code` | Semántica | Brand label | Generic label | `is_closed` | `is_waiting_customer` | `is_waiting_internal` |
+| `status_code` | Semantics | Brand label | Generic label | `is_closed` | `is_waiting_customer` | `is_waiting_internal` |
 |---|---|---|---|---:|---:|---:|
-| `new` | Ticket creado | 🚀 Nuevo | 🚀 Nuevo | 0 | 0 | 0 |
-| `pending_reception` | Aún no recepcionado | 📦 Pendiente de recepción | 📦 Pendiente de recepción | 0 | 0 | 0 |
-| `received` | Equipo recepcionado | 🏁 Recepcionado por Letsfix | 🏁 Recepcionado por taller | 0 | 0 | 0 |
-| `diagnosis` | Diagnóstico técnico | 🔍 En diagnóstico por Letsfix | 🔍 En diagnóstico interno | 0 | 0 | 1 |
-| `assigned` | Técnico asignado | 👨‍🔧/👩‍🔧 Técnico asignado | 👨‍🔧/👩‍🔧 Técnico asignado | 0 | 0 | 0 |
-| `in_progress` | Trabajo activo | ⚙️ En curso | ⚙️ En curso | 0 | 0 | 0 |
-| `repairing` | Reparación activa | 🛠️ En reparación | 🛠️ En reparación | 0 | 0 | 0 |
-| `waiting_spare` | Espera recambio | 🚚 Espera recambio | 🚚 Espera recambio | 0 | 0 | 1 |
-| `waiting_customer` | Espera respuesta cliente | 💬 Espera cliente | 💬 Espera cliente | 0 | 1 | 0 |
-| `waiting_internal` | Espera respuesta interna | 🕓 Espera Letsfix | 🕓 Espera interno | 0 | 0 | 1 |
-| `ready_to_ship` | Listo para entrega | ✅ Listo para envío | ✅ Listo para entrega | 0 | 0 | 0 |
-| `shipped` | Enviado | ✈️ Enviado al cliente | ✈️ Enviado | 0 | 0 | 0 |
-| `delivered` | Entregado | 📬 Recepcionado por cliente | 📬 Entregado | 1 | 0 | 0 |
-| `quote_rejected` | Presupuesto rechazado | ❌ Presupuesto rechazado | ❌ Presupuesto rechazado | 1 | 0 | 0 |
-| `closed` | Cerrado definitivo | 🔒 Cerrado | 🔒 Cerrado | 1 | 0 | 0 |
+| `new` | Ticket created | 🚀 New | 🚀 New | 0 | 0 | 0 |
+| `pending_reception` | Not yet received | 📦 Pending reception | 📦 Pending reception | 0 | 0 | 0 |
+| `received` | Device received | 🏁 Received by Letsfix | 🏁 Received by workshop | 0 | 0 | 0 |
+| `diagnosis` | Technical diagnosis | 🔍 In diagnosis by Letsfix | 🔍 In internal diagnosis | 0 | 0 | 1 |
+| `assigned` | Technician assigned | 👨‍🔧/👩‍🔧 Technician assigned | 👨‍🔧/👩‍🔧 Technician assigned | 0 | 0 | 0 |
+| `in_progress` | Active work | ⚙️ In progress | ⚙️ In progress | 0 | 0 | 0 |
+| `repairing` | Active repair | 🛠️ Repairing | 🛠️ Repairing | 0 | 0 | 0 |
+| `waiting_spare` | Waiting spare part | 🚚 Waiting spare part | 🚚 Waiting spare part | 0 | 0 | 1 |
+| `waiting_customer` | Waiting customer reply | 💬 Waiting customer | 💬 Waiting customer | 0 | 1 | 0 |
+| `waiting_internal` | Waiting internal reply | 🕓 Waiting Letsfix | 🕓 Waiting internal | 0 | 0 | 1 |
+| `ready_to_ship` | Ready for delivery | ✅ Ready to ship | ✅ Ready to deliver | 0 | 0 | 0 |
+| `shipped` | Shipped | ✈️ Shipped to customer | ✈️ Shipped | 0 | 0 | 0 |
+| `delivered` | Delivered | 📬 Received by customer | 📬 Delivered | 1 | 0 | 0 |
+| `quote_rejected` | Quote rejected | ❌ Quote rejected | ❌ Quote rejected | 1 | 0 | 0 |
+| `closed` | Final closure | 🔒 Closed | 🔒 Closed | 1 | 0 | 0 |
 
-## 5) Matriz de rutas API
+## 5) API route matrix
 
-| Operación | Plantilla | Brand ejemplo | Generic ejemplo |
+| Operation | Template | Brand example | Generic example |
 |---|---|---|---|
-| Listar tickets | `GET /api/{module_slug}/tickets` | `/api/letsfixtickets/tickets` | `/api/ticketflow/tickets` |
-| Crear ticket | `POST /api/{module_slug}/tickets` | `/api/letsfixtickets/tickets` | `/api/ticketflow/tickets` |
-| Ver ticket | `GET /api/{module_slug}/tickets/{id}` | `/api/letsfixtickets/tickets/123` | `/api/ticketflow/tickets/123` |
-| Actualizar ticket | `PUT /api/{module_slug}/tickets/{id}` | `/api/letsfixtickets/tickets/123` | `/api/ticketflow/tickets/123` |
-| Añadir hilo | `POST /api/{module_slug}/tickets/{id}/threads` | `/api/letsfixtickets/tickets/123/threads` | `/api/ticketflow/tickets/123/threads` |
+| List tickets | `GET /api/{module_slug}/tickets` | `/api/letsfixtickets/tickets` | `/api/ticketflow/tickets` |
+| Create ticket | `POST /api/{module_slug}/tickets` | `/api/letsfixtickets/tickets` | `/api/ticketflow/tickets` |
+| View ticket | `GET /api/{module_slug}/tickets/{id}` | `/api/letsfixtickets/tickets/123` | `/api/ticketflow/tickets/123` |
+| Update ticket | `PUT /api/{module_slug}/tickets/{id}` | `/api/letsfixtickets/tickets/123` | `/api/ticketflow/tickets/123` |
+| Add thread | `POST /api/{module_slug}/tickets/{id}/threads` | `/api/letsfixtickets/tickets/123/threads` | `/api/ticketflow/tickets/123/threads` |
 | Import dry-run | `POST /api/{module_slug}/import/supportcandy/dry-run` | `/api/letsfixtickets/import/supportcandy/dry-run` | `/api/ticketflow/import/supportcandy/dry-run` |
 | Import run | `POST /api/{module_slug}/import/supportcandy/run` | `/api/letsfixtickets/import/supportcandy/run` | `/api/ticketflow/import/supportcandy/run` |
 
-## 6) Reglas de idempotencia operativa
+## 6) Operational idempotency rules
 
-1. Toda escritura (`POST/PUT`) debe aceptar `idempotency_key`.
-2. Unicidad recomendada: `(http_method, canonical_path, idempotency_key, actor_id)`.
-3. Repetición con misma clave y mismo payload => misma respuesta lógica.
-4. Repetición con misma clave y payload distinto => `409 Conflict`.
-5. Importación usa además dedupe por `source_system + source_id`.
-6. `dry_run=true` nunca persiste datos.
+1. Every write (`POST/PUT`) must accept `idempotency_key`.
+2. Recommended uniqueness: `(http_method, canonical_path, idempotency_key, actor_id)`.
+3. Repeat with same key and same payload => same logical response.
+4. Repeat with same key and different payload => `409 Conflict`.
+5. Import also uses dedupe by `source_system + source_id`.
+6. `dry_run=true` never persists data.
 
-## 7) Orden de implementación (sprintable)
+## 7) Implementation order (sprint-ready)
 
-1. Parametrizar `module_slug`, `profile`, `api.base_prefix`.
-2. Parametrizar catálogo de estados con `status_code` estable.
-3. Introducir `idempotency_key` en capa API.
-4. Alinear importador a dedupe dual (`idempotency_key` + `source_id`).
-5. Separar branding a archivo/config de perfil.
-6. Ejecutar pruebas en ambos perfiles con misma suite.
+1. Parameterize `module_slug`, `profile`, `api.base_prefix`.
+2. Parameterize status catalog with stable `status_code`.
+3. Introduce `idempotency_key` in API layer.
+4. Align importer to dual dedupe (`idempotency_key` + `source_id`).
+5. Move branding to profile file/config.
+6. Run tests in both profiles with the same suite.
 
-## 8) Checklist de aceptación
+## 8) Acceptance checklist
 
-- [ ] No quedan rutas hardcodeadas a marca en el core.
-- [ ] `brand` y `generic` arrancan sin cambios de código.
-- [ ] Reinstalar módulo no duplica seeds ni tablas.
-- [ ] Reintentos API no crean duplicados.
-- [ ] Reimportación de SupportCandy no duplica tickets/clientes.
-- [ ] Dataset y textos del perfil generic son aptos para TFM.
+- [ ] No brand-hardcoded routes remain in core.
+- [ ] `brand` and `generic` start with no code changes.
+- [ ] Reinstalling module does not duplicate seeds or tables.
+- [ ] API retries do not create duplicates.
+- [ ] SupportCandy re-import does not duplicate tickets/customers.
+- [ ] Generic profile dataset and texts are suitable for TFM.
 
-## 9) Decisiones abiertas
+## 9) Open decisions
 
-- Confirmar valor final de `lf.attachments.max_size_mb` en producción.
-- Definir catálogo mínimo de categorías para perfil generic.
-- Definir política de anonimización del dataset TFM (`masked_real` vs `synthetic`).
+- Confirm final `lf.attachments.max_size_mb` value for production.
+- Define minimum category catalog for generic profile.
+- Define TFM dataset anonymization policy (`masked_real` vs `synthetic`).

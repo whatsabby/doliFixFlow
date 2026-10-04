@@ -1,269 +1,269 @@
-﻿# Plan de desarrollo y delivery basado en TDD
+﻿# TDD-based Development and Delivery Plan (generic_specs)
 
-> Versión: 0.1  
-> Fecha: 2026-10-04  
-> Estado: listo para ejecución  
+> Version: 0.1  
+> Date: 2026-10-04  
+> Status: execution-ready  
 > Base: [03_arquitectura_paralela_idempotente_parametrizable_generic.md](C:/Users/moren/OneDrive/Documentos/repositorios/doliFixFlow/ia_specs_decisions/generic_specs/03_arquitectura_paralela_idempotente_parametrizable_generic.md)
 
-## 1. Marco de ejecución (regla global)
+## 1. Execution framework (global rule)
 
-Cada fase se ejecuta con el mismo ciclo:
+Each phase runs with the same cycle:
 
-1. **Definir fase** (objetivo, alcance, riesgos, DoD).
-2. **Definir TDD de fase** (casos, fixtures, criterios de verde).
-3. **Green + refactor + desarrollo**:
-   - escribir tests que fallen,
-   - implementar mínimo para pasar,
-   - refactorizar manteniendo verde,
-   - completar desarrollo funcional.
-4. **Pruebas** (unitarias + integración + regresión + no funcionales según aplique).
-5. **Cierre de feature/fase** (evidencias, métricas, acta de cierre, backlog residual).
+1. **Define phase** (objective, scope, risks, DoD).
+2. **Define phase TDD** (cases, fixtures, green criteria).
+3. **Green + refactor + development**:
+   - write failing tests,
+   - implement the minimum to pass,
+   - refactor while keeping green,
+   - complete functional development.
+4. **Testing** (unit + integration + regression + non-functional as needed).
+5. **Feature/phase closure** (evidence, metrics, closure record, residual backlog).
 
-Regla obligatoria: **no se desarrolla nada fuera de fase sin TDD definido y aprobado**.
+Mandatory rule: **no development outside a phase without a defined and approved TDD**.
 
-## 2. Estructura de fases del proyecto
+## 2. Project phase structure
 
-## Fase 0 — Fundaciones técnicas y entorno
+## Phase 0 — Technical foundations and environment
 
-**Objetivo**
-- Dejar preparado el entorno, estructura del módulo, pipeline y plantilla TDD.
+**Objective**
+- Prepare environment, module structure, pipeline, and TDD template.
 
-**Entregables**
-- Estructura base del módulo.
-- Plantilla estándar de casos TDD.
-- Pipeline CI con ejecución de tests.
-- Convención de perfiles `brand` y `generic`.
+**Deliverables**
+- Base module structure.
+- Standard TDD test-case template.
+- CI pipeline with test execution.
+- `brand` and `generic` profile convention.
 
-**TDD de fase (mínimo)**
-- Instala/desinstala sin error.
-- Reinstala sin duplicar tablas/seeds.
-- Arranca con `profile=brand` y `profile=generic` sin cambios de código.
-- Falla de configuración produce error controlado.
+**Phase TDD (minimum)**
+- Install/uninstall without error.
+- Reinstall without duplicating tables/seeds.
+- Start with `profile=brand` and `profile=generic` with no code changes.
+- Configuration failure returns a controlled error.
 
-**Green + refactor + desarrollo**
-- Test de instalación idempotente en rojo → implementación mínima → verde.
-- Refactor de bootstrap/config loader sin romper tests.
+**Green + refactor + development**
+- Idempotent installation test goes red → minimal implementation → green.
+- Refactor bootstrap/config loader without breaking tests.
 
-**Pruebas de salida**
-- Smoke CI en ambos perfiles.
-- Verificación de encoding UTF-8 y lint Markdown.
+**Exit tests**
+- CI smoke in both profiles.
+- UTF-8 encoding and Markdown lint verification.
 
-**Cierre de fase**
-- Checklist DoD firmado.
-- Matriz de parámetros enlazada y congelada para la siguiente fase.
-
----
-
-## Fase 1 — Núcleo de configuración parametrizable
-
-**Objetivo**
-- Implementar núcleo de configuración sin hardcode de marca.
-
-**Entregables**
-- Loader de configuración por perfil.
-- Resolución de `module_slug`, branding y catálogos base.
-- Registro central de parámetros y validaciones.
-
-**TDD de fase (mínimo)**
-- Resuelve `module_slug=letsfixtickets` en `brand`.
-- Resuelve `module_slug=ticketflow` en `generic`.
-- Rechaza parámetros inválidos con error claro.
-- Fallbacks por defecto funcionan cuando un parámetro opcional no existe.
-- No aparecen strings de marca en core (test de política).
-
-**Green + refactor + desarrollo**
-- Empezar por tests de resolución y validación.
-- Implementar servicio de configuración y factoría de perfiles.
-- Refactor para eliminar duplicidad de acceso a config.
-
-**Pruebas de salida**
-- Unit tests de config al 100% de reglas críticas.
-- Test de regresión “sin hardcode” por búsqueda automatizada.
-
-**Cierre de fase**
-- Evidencia de ambos perfiles operativos.
-- Acta de “config core estable”.
+**Phase closure**
+- Signed DoD checklist.
+- Parameter matrix linked and frozen for the next phase.
 
 ---
 
-## Fase 2 — Dominio de tickets (estados, campos, permisos)
+## Phase 1 — Parameterized configuration core
 
-**Objetivo**
-- Implementar flujo de tickets con semántica común y presentación por perfil.
+**Objective**
+- Implement a configuration core with no brand hardcoding.
 
-**Entregables**
-- Catálogo de estados con `status_code` estable.
-- Prioridades/categorías parametrizables.
-- Campos técnicos y reglas de visibilidad.
-- Permisos por rol.
+**Deliverables**
+- Profile-based configuration loader.
+- Resolution of `module_slug`, branding, and base catalogs.
+- Central parameter registry and validations.
 
-**TDD de fase (mínimo)**
-- Cada `status_code` mapea correctamente a flags (`is_closed`, etc.).
-- Transiciones inválidas quedan bloqueadas.
-- Cliente no ve notas internas.
-- Técnico/administrador respetan permisos definidos.
-- Render de labels por perfil cambia texto, no semántica.
+**Phase TDD (minimum)**
+- Resolves `module_slug=letsfixtickets` in `brand`.
+- Resolves `module_slug=ticketflow` in `generic`.
+- Rejects invalid parameters with clear error.
+- Default fallbacks work when an optional parameter is missing.
+- No brand strings appear in core code (policy test).
 
-**Green + refactor + desarrollo**
-- Test-first de motor de estados y autorizaciones.
-- Implementación mínima de repositorios/servicios.
-- Refactor para separar reglas de dominio de capa UI.
+**Green + refactor + development**
+- Start with resolution/validation tests.
+- Implement configuration service and profile factory.
+- Refactor to remove duplicated config access.
 
-**Pruebas de salida**
-- Integración ticket completo: alta → asignación → cierre.
-- Regresión de permisos y visibilidad.
+**Exit tests**
+- Config unit tests covering 100% of critical rules.
+- “No hardcoding” regression test via automated search.
 
-**Cierre de fase**
-- UAT funcional sobre casos operativos clave.
-- Aprobación de flujo end-to-end.
-
----
-
-## Fase 3 — API idempotente y segura
-
-**Objetivo**
-- Exponer API estable para tickets con idempotencia completa.
-
-**Entregables**
-- Endpoints CRUD + hilos + adjuntos + estados.
-- Soporte `idempotency_key` en escrituras.
-- Contratos de error consistentes.
-
-**TDD de fase (mínimo)**
-- Misma `idempotency_key` + mismo payload => misma respuesta.
-- Misma `idempotency_key` + payload distinto => `409 Conflict`.
-- Sin permiso => `403`.
-- Nota interna no aparece en endpoints cliente.
-- Paginación y filtros devuelven shape estable.
-
-**Green + refactor + desarrollo**
-- Contract tests primero (request/response).
-- Implementar middleware idempotente.
-- Refactor para centralizar validaciones de entrada.
-
-**Pruebas de salida**
-- Pruebas de concurrencia básica en endpoints de escritura.
-- Pruebas de compatibilidad en ambos perfiles (`/api/letsfixtickets` y `/api/ticketflow`).
-
-**Cierre de fase**
-- Publicación de contrato API versionado.
-- Evidencia de estabilidad de reintentos.
+**Phase closure**
+- Evidence that both profiles are operational.
+- Signed “stable config core” record.
 
 ---
 
-## Fase 4 — Importación SupportCandy idempotente
+## Phase 2 — Ticket domain (statuses, fields, permissions)
 
-**Objetivo**
-- Migrar datos sin duplicar ni perder trazabilidad.
+**Objective**
+- Implement ticket flow with shared semantics and profile-specific presentation.
 
-**Entregables**
-- Importador `dry-run` y `run`.
-- Mapeo `source_system + source_id`.
-- Logs de lote y `resume_token`.
+**Deliverables**
+- Status catalog with stable `status_code`.
+- Parameterized priorities/categories.
+- Technical fields and visibility rules.
+- Role-based permissions.
 
-**TDD de fase (mínimo)**
-- `dry-run` no persiste datos.
-- Reimportación del mismo lote no duplica.
-- Lote interrumpido se reanuda correctamente.
-- Errores parciales no rompen consistencia global.
-- Clientes/tickets mapeados conservan relación origen-destino.
+**Phase TDD (minimum)**
+- Each `status_code` maps correctly to flags (`is_closed`, etc.).
+- Invalid transitions are blocked.
+- Customer cannot view internal notes.
+- Technician/admin respect defined permissions.
+- Label rendering changes text by profile, not semantics.
 
-**Green + refactor + desarrollo**
-- Test-first por pipeline de importación.
-- Implementar dedupe + merge de campos permitidos.
-- Refactor de parser/mapping para separarlo del motor de persistencia.
+**Green + refactor + development**
+- Test-first state engine and authorization rules.
+- Minimal repository/service implementation.
+- Refactor to separate domain rules from UI layer.
 
-**Pruebas de salida**
-- Dataset de prueba controlado + métricas de import.
-- Comparativa pre/post con conteos esperados.
+**Exit tests**
+- Full ticket integration: creation → assignment → closure.
+- Permission and visibility regression.
 
-**Cierre de fase**
-- Informe de migración firmado.
-- Plan de rollback lógico validado.
+**Phase closure**
+- Functional UAT on key operational cases.
+- End-to-end flow approval.
 
 ---
 
-## Fase 5 — Hardening, rendimiento y release
+## Phase 3 — Idempotent and secure API
 
-**Objetivo**
-- Preparar salida a producción con calidad y observabilidad.
+**Objective**
+- Expose a stable ticket API with full idempotency.
 
-**Entregables**
-- Suite de regresión completa automatizada.
-- Observabilidad mínima (logs, métricas de error y latencia).
-- Plan de release, rollback y checklist operativo.
+**Deliverables**
+- CRUD endpoints + threads + attachments + statuses.
+- `idempotency_key` support on write operations.
+- Consistent error contracts.
 
-**TDD de fase (mínimo)**
-- Regresión completa en verde en ambos perfiles.
-- Pruebas de carga mínima de endpoints críticos.
-- Pruebas de seguridad básicas (acceso no autorizado, exposición de datos).
-- Reinstalación/upgrade idempotente sigue verde.
+**Phase TDD (minimum)**
+- Same `idempotency_key` + same payload => same response.
+- Same `idempotency_key` + different payload => `409 Conflict`.
+- No permission => `403`.
+- Internal note not exposed in customer endpoints.
+- Pagination and filters return stable shape.
 
-**Green + refactor + desarrollo**
-- Corregir deuda técnica detectada por tests.
-- Refactor final orientado a mantenibilidad.
+**Green + refactor + development**
+- Contract tests first (request/response).
+- Implement idempotency middleware.
+- Refactor to centralize input validations.
 
-**Pruebas de salida**
-- Test plan completo + resultados archivados.
-- Smoke en entorno preproducción.
+**Exit tests**
+- Basic concurrency tests on write endpoints.
+- Compatibility tests on both profiles (`/api/letsfixtickets` and `/api/ticketflow`).
 
-**Cierre de fase**
-- Go/No-Go.
-- Cierre formal de release y backlog de mejoras.
+**Phase closure**
+- Published versioned API contract.
+- Retry-stability evidence.
 
-## 3. Definición estándar de TDD por fase (plantilla)
+---
 
-Para cada fase se debe adjuntar un TDD con:
+## Phase 4 — Idempotent SupportCandy import
 
-- **Objetivo de pruebas**.
-- **Supuestos y fixtures**.
-- **Matriz Given/When/Then**.
-- **Casos negativos y bordes**.
-- **Criterio de verde** (qué porcentaje/casos son obligatorios).
-- **Riesgos cubiertos / no cubiertos**.
-- **Evidencia** (logs, reportes, capturas, trazas).
+**Objective**
+- Migrate data without duplication and with full traceability.
 
-## 4. Quality gates obligatorios
+**Deliverables**
+- `dry-run` and `run` importer.
+- `source_system + source_id` mapping.
+- Batch logs and `resume_token`.
 
-- Gate 1: TDD aprobado antes de desarrollo.
-- Gate 2: tests en rojo reproducibles.
-- Gate 3: verde completo de fase.
-- Gate 4: refactor sin regresión.
-- Gate 5: cierre con acta y evidencias.
+**Phase TDD (minimum)**
+- `dry-run` does not persist data.
+- Re-importing the same batch does not duplicate.
+- Interrupted batch resumes correctly.
+- Partial errors do not break global consistency.
+- Mapped customers/tickets preserve source-target relationships.
 
-Si falla un gate, **no avanza la fase**.
+**Green + refactor + development**
+- Test-first import pipeline.
+- Implement dedupe + merge for allowed fields.
+- Refactor parser/mapping to isolate it from persistence engine.
 
-## 5. Estrategia de paralelización (propio + genérico)
+**Exit tests**
+- Controlled test dataset + import metrics.
+- Pre/post comparison with expected counts.
 
-- Se ejecuta una sola implementación core.
-- Validación obligatoria en dos perfiles:
+**Phase closure**
+- Signed migration report.
+- Validated logical rollback plan.
+
+---
+
+## Phase 5 — Hardening, performance, and release
+
+**Objective**
+- Prepare production release with quality and observability.
+
+**Deliverables**
+- Fully automated regression suite.
+- Minimum observability (logs, error metrics, latency metrics).
+- Release plan, rollback plan, and operational checklist.
+
+**Phase TDD (minimum)**
+- Full regression green in both profiles.
+- Minimum load tests for critical endpoints.
+- Basic security tests (unauthorized access, data exposure).
+- Idempotent reinstall/upgrade still green.
+
+**Green + refactor + development**
+- Fix technical debt found by tests.
+- Final maintainability-focused refactor.
+
+**Exit tests**
+- Full test plan + archived results.
+- Smoke tests in preproduction environment.
+
+**Phase closure**
+- Go/No-Go decision.
+- Formal release closure and improvements backlog.
+
+## 3. Standard TDD definition per phase (template)
+
+Each phase must include a TDD document with:
+
+- **Test objective**.
+- **Assumptions and fixtures**.
+- **Given/When/Then matrix**.
+- **Negative and edge cases**.
+- **Green criteria** (which percentages/cases are mandatory).
+- **Covered / uncovered risks**.
+- **Evidence** (logs, reports, screenshots, traces).
+
+## 4. Mandatory quality gates
+
+- Gate 1: TDD approved before development.
+- Gate 2: reproducible red tests.
+- Gate 3: full phase green.
+- Gate 4: refactor without regression.
+- Gate 5: closure with report and evidence.
+
+If any gate fails, **the phase does not advance**.
+
+## 5. Parallelization strategy (owned + generic)
+
+- One shared core implementation is executed.
+- Mandatory validation in two profiles:
   - `profile=brand`
   - `profile=generic`
-- Todo bug corregido debe añadir test de regresión para ambos perfiles.
+- Every fixed bug must include regression tests for both profiles.
 
-## 6. Cadencia sugerida (iteración)
+## 6. Suggested cadence (iteration)
 
-Por cada fase:
+For each phase:
 
-- Día 1: definición + TDD.
-- Día 2-3: green + desarrollo mínimo.
-- Día 4: refactor.
-- Día 5: pruebas de salida + cierre.
+- Day 1: definition + TDD.
+- Day 2-3: green + minimum development.
+- Day 4: refactor.
+- Day 5: exit tests + closure.
 
-(ajustable según complejidad)
+(adjustable by complexity)
 
-## 7. Artefactos de delivery por fase
+## 7. Delivery artifacts per phase
 
-- `TDD_Fx.md` (diseño de pruebas de fase).
-- `TEST_REPORT_Fx.md` (resultado ejecución).
-- `CHANGELOG_Fx.md` (qué cambió).
-- `RETRO_Fx.md` (riesgos, deuda, mejoras).
+- `TDD_Fx.md` (phase test design).
+- `TEST_REPORT_Fx.md` (execution results).
+- `CHANGELOG_Fx.md` (what changed).
+- `RETRO_Fx.md` (risks, debt, improvements).
 
-## 8. Criterio de éxito global
+## 8. Global success criteria
 
-El plan se considera exitoso cuando:
+The plan is successful when:
 
-1. Todas las fases completan gates 1..5.
-2. No hay duplicados en instalación/importación/API por reintentos.
-3. Brand y Generic pasan la misma suite crítica.
-4. El perfil genérico queda apto para defensa TFM sin acoplamiento de marca.
+1. All phases complete gates 1..5.
+2. No duplicates appear in install/import/API under retries.
+3. Brand and Generic pass the same critical suite.
+4. Generic profile is ready for TFM defense without brand coupling.
