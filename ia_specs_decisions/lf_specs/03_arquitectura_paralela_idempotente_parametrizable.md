@@ -157,3 +157,4 @@ Se da por válida cuando:
 
 Tomar el documento funcional base y construir una **matriz de parámetros** (estado actual vs genérico) para transformar los artefactos actuales sin romper la línea propia.
 
+

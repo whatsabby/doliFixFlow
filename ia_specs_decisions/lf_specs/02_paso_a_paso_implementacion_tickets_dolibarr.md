@@ -81,7 +81,7 @@ Entender qué cubre Dolibarr de forma nativa y qué necesita realmente el módul
 
 ---
 
-## 3. Crear módulo mínimo `letsfixtickets`
+## 3. Crear módulo mínimo parametrizable (`module_slug`)
 
 No empezaría por el módulo completo.
 
@@ -396,7 +396,7 @@ Mejor usar API o webhooks.
 Yo lo haría en este orden:
 
 1. Probar Tickets nativo de Dolibarr.
-2. Crear módulo mínimo `letsfixtickets`.
+2. Crear módulo mínimo parametrizable (`module_slug`) y declarar perfiles `brand` y `generic`.
 3. Añadir estados Letsfix con colores.
 4. Añadir campos de reparación.
 5. Adaptar ficha de ticket.
@@ -407,6 +407,7 @@ Yo lo haría en este orden:
 10. Probar tickets reales nuevos.
 11. Conectar WordPress vía API.
 12. Dejar SupportCandy en solo lectura o retirarlo.
+13. Ejecutar validación dual: misma batería de pruebas para `profile=brand` y `profile=generic`.
 
 ---
 
@@ -414,7 +415,7 @@ Yo lo haría en este orden:
 
 El primer MVP debería limitarse a:
 
-- módulo instalable
+- módulo instalable parametrizable por perfil (`brand`/`generic`)
 - estados personalizados
 - campos de reparación
 - listado operativo
@@ -460,5 +461,7 @@ Hay que construir una capa Letsfix sobre Tickets de Dolibarr.
 SupportCandy aporta la inspiración operativa.  
 Dolibarr debe aportar la estructura empresarial.  
 El módulo Letsfix une ambas cosas.
+
+
 
 

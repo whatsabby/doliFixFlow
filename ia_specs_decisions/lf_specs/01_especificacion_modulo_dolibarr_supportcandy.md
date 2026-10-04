@@ -52,7 +52,7 @@ Dolibarr ya dispone de un módulo nativo de tickets/helpdesk. Según documentaci
 Por tanto, la recomendación es:
 
 1. Activar y usar el módulo nativo **Ticket** de Dolibarr como base funcional siempre que sea viable.
-2. Crear un módulo propio, por ejemplo `letsfixtickets`, que extienda el comportamiento nativo en vez de duplicarlo todo desde cero.
+2. Crear un módulo propio parametrizable que extienda el comportamiento nativo en vez de duplicarlo todo desde cero. Recomendación de perfiles: `module_slug=letsfixtickets` para la línea propia (`profile=brand`) y `module_slug=ticketflow` para la línea genérica (`profile=generic`).
 3. Usar **extrafields** de Dolibarr cuando el dato encaje como campo adicional estándar.
 4. Crear tablas propias solo para funciones que Dolibarr no cubra bien: estados visuales personalizados, reglas de transición, vistas guardadas avanzadas, mapeo de migración, auditoría específica, sincronización con WordPress/SupportCandy, metadatos de conversación o SLA propios.
 
@@ -701,21 +701,21 @@ Opciones ordenadas de menor a mayor acoplamiento:
 
 Si se expone API REST en Dolibarr o se extiende la existente:
 
-- `GET /letsfixtickets/tickets`
-- `POST /letsfixtickets/tickets`
-- `GET /letsfixtickets/tickets/{id}`
-- `PUT /letsfixtickets/tickets/{id}`
-- `POST /letsfixtickets/tickets/{id}/threads`
-- `GET /letsfixtickets/tickets/{id}/threads`
-- `POST /letsfixtickets/tickets/{id}/attachments`
-- `POST /letsfixtickets/tickets/{id}/assign`
-- `POST /letsfixtickets/tickets/{id}/status`
-- `GET /letsfixtickets/statuses`
-- `GET /letsfixtickets/priorities`
-- `GET /letsfixtickets/categories`
-- `GET /letsfixtickets/fields`
-- `POST /letsfixtickets/import/supportcandy/dry-run`
-- `POST /letsfixtickets/import/supportcandy/run`
+- `GET /{module_slug}/tickets`
+- `POST /{module_slug}/tickets`
+- `GET /{module_slug}/tickets/{id}`
+- `PUT /{module_slug}/tickets/{id}`
+- `POST /{module_slug}/tickets/{id}/threads`
+- `GET /{module_slug}/tickets/{id}/threads`
+- `POST /{module_slug}/tickets/{id}/attachments`
+- `POST /{module_slug}/tickets/{id}/assign`
+- `POST /{module_slug}/tickets/{id}/status`
+- `GET /{module_slug}/statuses`
+- `GET /{module_slug}/priorities`
+- `GET /{module_slug}/categories`
+- `GET /{module_slug}/fields`
+- `POST /{module_slug}/import/supportcandy/dry-run`
+- `POST /{module_slug}/import/supportcandy/run`
 
 ### 13.2 Requisitos API
 
@@ -726,6 +726,9 @@ Si se expone API REST en Dolibarr o se extiende la existente:
 - Paginación.
 - Filtros por estado, asignado, cliente, fecha, categoría, prioridad.
 - Idempotencia en importación usando IDs legacy.
+- Idempotencia en escrituras con `idempotency_key` por operación (`POST`/`PUT`).
+- Reintentos con la misma `idempotency_key` devuelven mismo resultado lógico, sin duplicados.
+- TTL recomendado de `idempotency_key`: 24 horas (configurable).
 - No exponer notas internas a clientes.
 
 ## 14. Migración desde SupportCandy
@@ -733,7 +736,7 @@ Si se expone API REST en Dolibarr o se extiende la existente:
 ### 14.1 Estrategia recomendada
 
 1. Activar módulo Dolibarr Ticket en entorno de pruebas.
-2. Instalar módulo `letsfixtickets`.
+2. Instalar el módulo con `module_slug` según perfil (`letsfixtickets` en brand, `ticketflow` en generic).
 3. Configurar estados, prioridades, categorías y extrafields.
 4. Importar catálogos SC: estados, prioridades, categorías, campos y opciones.
 5. Importar agentes y mapearlos a usuarios Dolibarr.
@@ -777,6 +780,9 @@ El importador debe tener modo dry-run que informe:
 ## 15. Configuración del módulo
 
 Pantalla de configuración admin:
+
+- Seleccionar `profile` (`brand` o `generic`).
+- Configurar `module_slug` y prefijo API (por defecto `/api/{module_slug}`).
 
 - Activar/desactivar estado operativo Letsfix.
 - Configurar estados y colores.
@@ -849,7 +855,7 @@ Regla: cualquier mensaje externo generado por IA debe quedar como borrador o req
 
 ### 19.1 Rol del agente desarrollador
 
-El agente debe construir un módulo Dolibarr instalable llamado provisionalmente `letsfixtickets`, priorizando reutilizar el módulo Ticket nativo y extendiéndolo mediante extrafields, hooks, triggers, páginas admin, CSS propio, API e importador desde SupportCandy.
+El agente debe construir un módulo Dolibarr instalable parametrizable (`module_slug` por perfil), priorizando reutilizar el módulo Ticket nativo y extendiéndolo mediante extrafields, hooks, triggers, páginas admin, CSS propio, API e importador desde SupportCandy.
 
 ### 19.2 Objetivos del agente
 
@@ -876,7 +882,7 @@ El agente debe construir un módulo Dolibarr instalable llamado provisionalmente
 
 ### 20.1 Componentes
 
-- Descriptor módulo: `modLetsfixTickets.class.php`.
+- Descriptor módulo parametrizable: `mod{ModuleStudly}.class.php`. En perfil brand puede resolverse a `modLetsfixTickets.class.php` y en perfil generic a `modTicketflow.class.php`.
 - SQL install: tablas propias + datos iniciales.
 - Clases DAO:
   - `LetsfixTicketStatus`
@@ -913,11 +919,11 @@ El agente debe construir un módulo Dolibarr instalable llamado provisionalmente
 Estructura recomendada:
 
 ```text
-letsfixtickets/
+{module_slug}/
   admin/
   api/
   class/
-  core/modules/modLetsfixTickets.class.php
+  core/modules/mod{ModuleStudly}.class.php
   core/triggers/
   css/
   docs/
@@ -1072,7 +1078,7 @@ El MVP se considera válido si:
 
 ## 24. Recomendación final
 
-Construir `letsfixtickets` como capa vertical de Letsfix sobre el módulo Ticket nativo de Dolibarr, no como sistema paralelo completamente aislado.
+Construir una capa vertical sobre el módulo Ticket nativo de Dolibarr con dos perfiles (`brand` y `generic`), no como sistema paralelo completamente aislado.
 
 La clave no es copiar SupportCandy pantalla por pantalla, sino conservar lo que SC aporta a la operativa real:
 
@@ -1085,5 +1091,7 @@ La clave no es copiar SupportCandy pantalla por pantalla, sino conservar lo que 
 - y migración segura.
 
 Dolibarr debe aportar la base empresarial: clientes, usuarios, agenda, documentos, presupuestos, facturas, servicios y permisos.
+
+
 
 
