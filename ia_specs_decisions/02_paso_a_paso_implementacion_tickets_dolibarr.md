@@ -1,4 +1,4 @@
-# Paso a paso — Implementación de tickets Letsfix en Dolibarr
+﻿# Paso a paso — Implementación de tickets Letsfix en Dolibarr
 
 > Versión: 0.1  
 > Objetivo: guía sencilla para implementar en Dolibarr una alternativa a SupportCandy usando el módulo nativo de Tickets como base.
@@ -460,3 +460,5 @@ Hay que construir una capa Letsfix sobre Tickets de Dolibarr.
 SupportCandy aporta la inspiración operativa.  
 Dolibarr debe aportar la estructura empresarial.  
 El módulo Letsfix une ambas cosas.
+
+

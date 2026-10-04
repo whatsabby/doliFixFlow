@@ -1,13 +1,13 @@
-# Especificación — Migración de SupportCandy a Dolibarr para Letsfix
+﻿# Especificación — Migración de SupportCandy a Dolibarr para una organización tipo taller
 
 > Versión: 0.1  
 > Fecha: 2026-08-25  
 > Estado: borrador técnico para preparar IA Agent Spec, SDD y TDD  
-> Autor: Claudia / Letsfix
+> Autor: Equipo del proyecto
 
 ## 1. Objetivo
 
-Crear un módulo instalable en Dolibarr que sustituya el uso actual de SupportCandy en WordPress para la gestión de tickets de Letsfix, manteniendo las funciones operativas actuales y aprovechando al máximo capacidades nativas de Dolibarr.
+Crear un módulo instalable en Dolibarr que sustituya el uso actual de SupportCandy en WordPress para la gestión de tickets de la organización, manteniendo las funciones operativas actuales y aprovechando al máximo capacidades nativas de Dolibarr.
 
 El módulo no debe limitarse a replicar pantallas de SupportCandy. Debe integrarse con el modelo de Dolibarr para que los tickets puedan convivir con terceros, contactos, usuarios internos, agenda, documentos, presupuestos/facturas, productos/servicios y futuras automatizaciones.
 
@@ -52,7 +52,7 @@ Dolibarr ya dispone de un módulo nativo de tickets/helpdesk. Según documentaci
 Por tanto, la recomendación es:
 
 1. Activar y usar el módulo nativo **Ticket** de Dolibarr como base funcional siempre que sea viable.
-2. Crear un módulo propio, por ejemplo `letsfixtickets`, que extienda el comportamiento nativo en vez de duplicarlo todo desde cero.
+2. Crear un módulo propio, por ejemplo `ticketflow`, que extienda el comportamiento nativo en vez de duplicarlo todo desde cero.
 3. Usar **extrafields** de Dolibarr cuando el dato encaje como campo adicional estándar.
 4. Crear tablas propias solo para funciones que Dolibarr no cubra bien: estados visuales personalizados, reglas de transición, vistas guardadas avanzadas, mapeo de migración, auditoría específica, sincronización con WordPress/SupportCandy, metadatos de conversación o SLA propios.
 
@@ -65,7 +65,7 @@ Por tanto, la recomendación es:
 - Reduce duplicidades de clientes y técnicos.
 - Permite usar API, hooks y triggers de Dolibarr.
 
-## 4. Inventario actual extraído de SupportCandy en letsfix.es
+## 4. Inventario actual extraído de SupportCandy en dominio-origen.local
 
 Fuente de extracción: REST API de SupportCandy en WordPress.  
 Archivo local de inventario: `research/supportcandy_api_inventory_2026-08-25.json`.
@@ -77,9 +77,9 @@ Archivo local de inventario: `research/supportcandy_api_inventory_2026-08-25.jso
 | 1 | Abby | Agente |
 | 4 | Claudia | Agente |
 | 3 | Jose del Valle | Agente |
-| 2 | letsfix.es | Agente |
+| 2 | dominio-origen.local | Agente |
 
-> Nota: en Dolibarr estos deben mapearse a usuarios internos (`llx_user`) o grupos de usuarios. El usuario `letsfix.es` parece candidato a usuario técnico/sistema/importación, no necesariamente una persona real.
+> Nota: en Dolibarr estos deben mapearse a usuarios internos (`llx_user`) o grupos de usuarios. El usuario `dominio-origen.local` parece candidato a usuario técnico/sistema/importación, no necesariamente una persona real.
 
 ### 4.2 Clientes actuales
 
@@ -128,13 +128,13 @@ Mapeo recomendado:
 |---:|---:|---|---|---|
 | 1 | 1 | 🚀 Nuevo | `#212121` | `#f8bbd0` |
 | 2 | 8 | 📦 Pendiente de recepción | `#ffffff` | `#f06292` |
-| 3 | 9 | 🏁 Recepcionado por Letsfix | `#ffffff` | `#ba68c8` |
-| 4 | 10 | 🔍 En diagnostico por Letsfix | `#ffffff` | `#f914f8` |
+| 3 | 9 | 🏁 Recepcionado por la organización | `#ffffff` | `#ba68c8` |
+| 4 | 10 | 🔍 En diagnostico por la organización | `#ffffff` | `#f914f8` |
 | 5 | 15 | ❌ Presupuesto rechazado | `#212121` | `#b0bec5` |
 | 6 | 13 | 🛠️ En reparacion | `#FFFFFF` | `#c62828` |
 | 7 | 3 | 🚚 En espera de recepción de recambio | `#ffffff` | `#fb8c00` |
 | 8 | 2 | 💬 En espera de respuesta del cliente | `#212121` | `#fdd835` |
-| 9 | 7 | 🕓 En espera de respuesta por Letsfix | `#ffffff` | `#ef5350` |
+| 9 | 7 | 🕓 En espera de respuesta por la organización | `#ffffff` | `#ef5350` |
 | 10 | 6 | ✅ Listo para envio | `#ffffff` | `#66bb6a` |
 | 11 | 11 | ✈️ Enviado de vuelta al cliente | `#ffffff` | `#43a047` |
 | 12 | 12 | 📬 Recepcionado por el cliente | `#212121` | `#9ccc65` |
@@ -144,31 +144,31 @@ Mapeo recomendado:
 
 Observaciones:
 
-- El flujo real de Letsfix está orientado a reparación física, recepción de dispositivo, diagnóstico, presupuesto, recambio, reparación y devolución.
+- El flujo real de la organización está orientado a reparación física, recepción de dispositivo, diagnóstico, presupuesto, recambio, reparación y devolución.
 - Dolibarr tiene estados nativos de ticket, pero probablemente no cubre toda esta granularidad operativa.
-- Recomendación: mantener un campo de estado operativo Letsfix separado del estado técnico interno de Dolibarr.
+- Recomendación: mantener un campo de estado operativo organización separado del estado técnico interno de Dolibarr.
 
 #### 4.5.1 Mapeo propuesto con estado nativo Dolibarr
 
-| Estado Letsfix | Estado Dolibarr sugerido | Comentario |
+| Estado organización | Estado Dolibarr sugerido | Comentario |
 |---|---|---|
 | 🚀 Nuevo | Not read / Read | Ticket recibido, pendiente de clasificación. |
 | 👨‍🔧 Técnico asignado | Assigned | Asignación interna hecha. |
 | ⚙️ En curso | In progress | Trabajo activo genérico. |
 | 📦 Pendiente de recepción | Assigned / In progress | Esperando que llegue o se recoja el equipo. |
-| 🏁 Recepcionado por Letsfix | In progress | Equipo ya en poder de Letsfix. |
-| 🔍 En diagnostico por Letsfix | In progress | Diagnóstico técnico. |
+| 🏁 Recepcionado por la organización | In progress | Equipo ya en poder de la organización. |
+| 🔍 En diagnostico por la organización | In progress | Diagnóstico técnico. |
 | ❌ Presupuesto rechazado | Canceled / Closed | Cierre sin reparación; conviene motivo de cierre. |
 | 🛠️ En reparacion | In progress | Reparación activa. |
 | 🚚 En espera de recepción de recambio | On hold | Bloqueado por pieza. |
 | 💬 En espera de respuesta del cliente | Waiting feedback requester | Depende del cliente. |
-| 🕓 En espera de respuesta por Letsfix | On hold / In progress | Depende de acción interna. |
+| 🕓 En espera de respuesta por la organización | On hold / In progress | Depende de acción interna. |
 | ✅ Listo para envio | In progress | Reparado/preparado, pendiente logística. |
 | ✈️ Enviado de vuelta al cliente | In progress / Closed pending | En tránsito. |
 | 📬 Recepcionado por el cliente | Closed/Solved | Entregado. |
 | 🔒 Cerrado | Closed/Solved | Cerrado administrativo. |
 
-Requisito importante: el módulo debe permitir configurar qué estados se consideran **abiertos**, **cerrados**, **bloqueados**, **esperando cliente**, **esperando Letsfix**, **resueltos** y **cancelados**.
+Requisito importante: el módulo debe permitir configurar qué estados se consideran **abiertos**, **cerrados**, **bloqueados**, **esperando cliente**, **esperando organización**, **resueltos** y **cancelados**.
 
 ### 4.6 Campos actuales de SupportCandy
 
@@ -293,13 +293,13 @@ Filtros estándar actuales:
 | Presupuestos | Propuestas/presupuestos | Vincular ticket ↔ presupuesto. |
 | Facturación | Facturas/pedidos | Vincular si hay reparación aceptada. |
 | Productos/servicios | Productos/servicios | Recambios, mano de obra, diagnósticos. |
-| Notificaciones | Sistema email Dolibarr + módulo propio | Plantillas específicas Letsfix. |
+| Notificaciones | Sistema email Dolibarr + módulo propio | Plantillas específicas organización. |
 
 ### 5.2 Entidades propias recomendadas
 
 #### `llx_letsfixticket_status`
 
-Estados visuales/operativos de Letsfix.
+Estados visuales/operativos de la organización.
 
 Campos sugeridos:
 
@@ -522,15 +522,15 @@ SupportCandy expone capacidades diferenciadas por ticket sin asignar, asignado a
 
 Implementación sugerida: permisos del módulo Dolibarr + comprobaciones en controladores y API.
 
-## 8. Flujo operativo Letsfix propuesto
+## 8. Flujo operativo organización propuesto
 
 ### 8.1 Flujo principal de reparación
 
 1. **Nuevo**: entra solicitud por formulario, WordPress, backoffice, email o API.
 2. **Técnico asignado**: se asigna responsable.
-3. **Pendiente de recepción**: el dispositivo aún no está en Letsfix o pendiente de recogida.
-4. **Recepcionado por Letsfix**: el equipo ya está recibido.
-5. **En diagnóstico por Letsfix**: revisión técnica inicial.
+3. **Pendiente de recepción**: el dispositivo aún no está en organización o pendiente de recogida.
+4. **Recepcionado por la organización**: el equipo ya está recibido.
+5. **En diagnóstico por la organización**: revisión técnica inicial.
 6. **En espera de respuesta del cliente**: presupuesto, autorización o aclaración pendiente del cliente.
 7. **Presupuesto rechazado**: cierre/cancelación sin reparación.
 8. **En espera de recepción de recambio**: pieza pedida o pendiente.
@@ -544,7 +544,7 @@ Implementación sugerida: permisos del módulo Dolibarr + comprobaciones en cont
 
 1. Nuevo.
 2. Técnico/admin asignado.
-3. En espera de respuesta por Letsfix o cliente según proceda.
+3. En espera de respuesta por la organización o cliente según proceda.
 4. Cerrado.
 
 ### 8.3 Flujo de mantenimiento
@@ -574,7 +574,7 @@ Debe mostrar por defecto:
 - Míos.
 - Cerrados.
 - Pendientes de cliente.
-- Pendientes de Letsfix.
+- Pendientes de la organización.
 - Pendientes de recambio.
 - En diagnóstico.
 - En reparación.
@@ -612,7 +612,7 @@ Requisito deseable:
 
 - Referencia Dolibarr.
 - ID legacy SC si existe.
-- Estado operativo Letsfix.
+- Estado operativo organización.
 - Estado nativo Dolibarr.
 - Prioridad.
 - Categoría.
@@ -701,21 +701,21 @@ Opciones ordenadas de menor a mayor acoplamiento:
 
 Si se expone API REST en Dolibarr o se extiende la existente:
 
-- `GET /letsfixtickets/tickets`
-- `POST /letsfixtickets/tickets`
-- `GET /letsfixtickets/tickets/{id}`
-- `PUT /letsfixtickets/tickets/{id}`
-- `POST /letsfixtickets/tickets/{id}/threads`
-- `GET /letsfixtickets/tickets/{id}/threads`
-- `POST /letsfixtickets/tickets/{id}/attachments`
-- `POST /letsfixtickets/tickets/{id}/assign`
-- `POST /letsfixtickets/tickets/{id}/status`
-- `GET /letsfixtickets/statuses`
-- `GET /letsfixtickets/priorities`
-- `GET /letsfixtickets/categories`
-- `GET /letsfixtickets/fields`
-- `POST /letsfixtickets/import/supportcandy/dry-run`
-- `POST /letsfixtickets/import/supportcandy/run`
+- `GET /ticketflow/tickets`
+- `POST /ticketflow/tickets`
+- `GET /ticketflow/tickets/{id}`
+- `PUT /ticketflow/tickets/{id}`
+- `POST /ticketflow/tickets/{id}/threads`
+- `GET /ticketflow/tickets/{id}/threads`
+- `POST /ticketflow/tickets/{id}/attachments`
+- `POST /ticketflow/tickets/{id}/assign`
+- `POST /ticketflow/tickets/{id}/status`
+- `GET /ticketflow/statuses`
+- `GET /ticketflow/priorities`
+- `GET /ticketflow/categories`
+- `GET /ticketflow/fields`
+- `POST /ticketflow/import/supportcandy/dry-run`
+- `POST /ticketflow/import/supportcandy/run`
 
 ### 13.2 Requisitos API
 
@@ -733,7 +733,7 @@ Si se expone API REST en Dolibarr o se extiende la existente:
 ### 14.1 Estrategia recomendada
 
 1. Activar módulo Dolibarr Ticket en entorno de pruebas.
-2. Instalar módulo `letsfixtickets`.
+2. Instalar módulo `ticketflow`.
 3. Configurar estados, prioridades, categorías y extrafields.
 4. Importar catálogos SC: estados, prioridades, categorías, campos y opciones.
 5. Importar agentes y mapearlos a usuarios Dolibarr.
@@ -778,11 +778,11 @@ El importador debe tener modo dry-run que informe:
 
 Pantalla de configuración admin:
 
-- Activar/desactivar estado operativo Letsfix.
+- Activar/desactivar estado operativo organización.
 - Configurar estados y colores.
 - Configurar prioridades y colores.
 - Configurar categorías.
-- Mapear estados Letsfix ↔ estados Dolibarr.
+- Mapear estados organización ↔ estados Dolibarr.
 - Configurar campos visibles por contexto.
 - Configurar roles/capacidades.
 - Configurar plantillas de email.
@@ -800,7 +800,7 @@ Pantalla de configuración admin:
 - Ticket asignado.
 - Cambio de estado.
 - Respuesta pública del cliente.
-- Respuesta pública de Letsfix.
+- Respuesta pública de la organización.
 - Nota interna mencionando a usuario.
 - Ticket pendiente demasiado tiempo.
 - Presupuesto aceptado/rechazado.
@@ -849,7 +849,7 @@ Regla: cualquier mensaje externo generado por IA debe quedar como borrador o req
 
 ### 19.1 Rol del agente desarrollador
 
-El agente debe construir un módulo Dolibarr instalable llamado provisionalmente `letsfixtickets`, priorizando reutilizar el módulo Ticket nativo y extendiéndolo mediante extrafields, hooks, triggers, páginas admin, CSS propio, API e importador desde SupportCandy.
+El agente debe construir un módulo Dolibarr instalable llamado provisionalmente `ticketflow`, priorizando reutilizar el módulo Ticket nativo y extendiéndolo mediante extrafields, hooks, triggers, páginas admin, CSS propio, API e importador desde SupportCandy.
 
 ### 19.2 Objetivos del agente
 
@@ -857,7 +857,7 @@ El agente debe construir un módulo Dolibarr instalable llamado provisionalmente
 2. Confirmar estructura real del módulo Ticket nativo.
 3. Crear esqueleto de módulo externo instalable.
 4. Definir migraciones SQL.
-5. Crear configuración inicial con estados/prioridades/categorías de Letsfix.
+5. Crear configuración inicial con estados/prioridades/categorías de la organización.
 6. Implementar extrafields necesarios.
 7. Añadir UI de listados y detalle si el nativo no basta.
 8. Implementar importador SupportCandy con dry-run.
@@ -876,14 +876,14 @@ El agente debe construir un módulo Dolibarr instalable llamado provisionalmente
 
 ### 20.1 Componentes
 
-- Descriptor módulo: `modLetsfixTickets.class.php`.
+- Descriptor módulo: `modticketflow.class.php`.
 - SQL install: tablas propias + datos iniciales.
 - Clases DAO:
-  - `LetsfixTicketStatus`
+  - `ticketflowtatus`
   - `LetsfixTicketTransition`
   - `LetsfixTicketMappingSC`
   - `LetsfixTicketThread` si aplica
-  - `LetsfixTicketSavedView`
+  - `ticketflowavedView`
   - `LetsfixTicketImporterSC`
 - Páginas admin:
   - configuración general
@@ -913,11 +913,11 @@ El agente debe construir un módulo Dolibarr instalable llamado provisionalmente
 Estructura recomendada:
 
 ```text
-letsfixtickets/
+ticketflow/
   admin/
   api/
   class/
-  core/modules/modLetsfixTickets.class.php
+  core/modules/modticketflow.class.php
   core/triggers/
   css/
   docs/
@@ -933,8 +933,8 @@ letsfixtickets/
 Al activar el módulo:
 
 - Crear tablas propias.
-- Insertar estados de Letsfix.
-- Insertar prioridades de Letsfix.
+- Insertar estados de la organización.
+- Insertar prioridades de la organización.
 - Insertar categorías si no se usan nativas.
 - Crear extrafields necesarios si no existen.
 - Crear permisos del módulo.
@@ -1044,7 +1044,7 @@ El listado debe renderizar un badge con:
 
 ## 22. Preguntas abiertas para cerrar antes de desarrollo
 
-1. ¿Qué versión exacta de Dolibarr está instalada en `core.letsfix.es`?
+1. ¿Qué versión exacta de Dolibarr está instalada en `core.dominio-origen.local`?
 2. ¿El módulo Ticket nativo está ya activo?
 3. ¿Queremos portal público de tickets en Dolibarr o mantener formulario en WordPress?
 4. ¿Los clientes particulares deben ser terceros individuales o contactos bajo un tercero genérico?
@@ -1060,7 +1060,7 @@ El listado debe renderizar un badge con:
 El MVP se considera válido si:
 
 - El módulo se instala y activa en Dolibarr sin tocar core.
-- Permite gestionar tickets con el flujo operativo de Letsfix.
+- Permite gestionar tickets con el flujo operativo de la organización.
 - Reproduce estados, prioridades, categorías y campos clave de SC.
 - Clientes se vinculan a terceros/contactos.
 - Técnicos son usuarios Dolibarr.
@@ -1072,7 +1072,7 @@ El MVP se considera válido si:
 
 ## 24. Recomendación final
 
-Construir `letsfixtickets` como capa vertical de Letsfix sobre el módulo Ticket nativo de Dolibarr, no como sistema paralelo completamente aislado.
+Construir `ticketflow` como capa vertical de la organización sobre el módulo Ticket nativo de Dolibarr, no como sistema paralelo completamente aislado.
 
 La clave no es copiar SupportCandy pantalla por pantalla, sino conservar lo que SC aporta a la operativa real:
 
@@ -1085,3 +1085,7 @@ La clave no es copiar SupportCandy pantalla por pantalla, sino conservar lo que 
 - y migración segura.
 
 Dolibarr debe aportar la base empresarial: clientes, usuarios, agenda, documentos, presupuestos, facturas, servicios y permisos.
+
+
+
+
