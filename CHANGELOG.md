@@ -13,6 +13,7 @@ Custom versioning scheme (3 numbers `X.Y.Z`, not standard SemVer):
 
 ### Added
 - Initial Composer/PHPUnit test harness for the Phase 0 environment-safety guard.
+- Fail-closed environment and native Ticket dependency preflight guards with focused tests.
 
 ### Changed
 - _Pending_
