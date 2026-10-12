@@ -4,4 +4,4 @@ PROJECT_MEMORY.md
 /.phpunit.cache/
 .phpunit.result.cache
 *.sql
-
+*.cache
