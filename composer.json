@@ -1,0 +1,24 @@
+{
+  "name": "letsfix/dolifixflow",
+  "description": "Letsfix Dolibarr ticket module and its test suite",
+  "type": "project",
+  "require-dev": {
+    "phpunit/phpunit": "^9.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Letsfix\\Tickets\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Letsfix\\Tickets\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

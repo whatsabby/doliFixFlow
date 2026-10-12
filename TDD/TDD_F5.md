@@ -3,7 +3,7 @@
 > Phase: 5  
 > Track: **Letsfix-first** production-readiness validation  
 > Status: Draft for review  
-> Source: `lf_specs/phase_5_definition.md`
+> Source: `lf_specs_definition/phase_5_definition.md`
 
 ## 1) Test objective
 
@@ -25,7 +25,7 @@ Validate release readiness through regression integrity, baseline load/security 
 
 ## 4) Assumptions
 
-- `lf_specs/phase_5_definition.md` approved.
+- `lf_specs_definition/phase_5_definition.md` approved.
 - Phases 0..4 TDD outputs are approved and available.
 - Risk-acceptance authority is owner-driven.
 - Production safety has priority over delivery speed.
@@ -160,7 +160,7 @@ Validate release readiness through regression integrity, baseline load/security 
 
 ### Entry gate
 
-- `lf_specs/phase_5_definition.md` approved.
+- `lf_specs_definition/phase_5_definition.md` approved.
 - Scope and assumptions confirmed.
 
 ### Exit gate

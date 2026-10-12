@@ -3,7 +3,7 @@
 > Phase: 1  
 > Track: **Letsfix-first** (`brand`) with generic-ready design  
 > Status: Draft for review  
-> Source: `lf_specs/phase_1_definition.md`
+> Source: `lf_specs_definition/phase_1_definition.md`
 
 ## 1) Test objective
 
@@ -167,7 +167,7 @@ Validate that configuration behavior is deterministic, parameter-driven, and fre
 
 ### Entry gate
 
-- `lf_specs/phase_1_definition.md` approved.
+- `lf_specs_definition/phase_1_definition.md` approved.
 - Scope and assumptions confirmed.
 
 ### Exit gate

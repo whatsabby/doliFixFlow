@@ -1,7 +1,7 @@
 ﻿# Phase 0 Definition — Setup and Foundations
 
 > Scope line: **Letsfix-first** implementation track.
-> Status: Draft for approval.
+> Status: Approved for TDD drafting (2026-10-12).
 
 ## 1) Phase objective
 
@@ -31,13 +31,15 @@ Establish the minimum technical baseline to start safe, repeatable development w
 - Current operational Dolibarr version: `20.0.2`.
 - Compatibility target to be considered in design: `24.0.2`.
 - Native Dolibarr Ticket module is enabled and reused as baseline.
+- Lifecycle actions are blocked on production and fail closed when the target environment cannot be identified.
+- Uninstall preserves module-created tables/schema.
 - Migration scope in future phases remains full historical data.
-- Final phase-gate approver is the business owner.
+- Final phase-gate approver is Claudia.
 
 ## 5) Deliverables for this phase
 
 - `phase_0_definition.md` (this file).
-- `TDD_F0.md` structure agreed (content deferred until you approve this definition).
+- `TDD_F0.md` draft prepared following approval of this definition.
 - `TEST_REPORT_F0.md` template agreed (empty skeleton only, deferred).
 - `RETRO_F0.md` template agreed (empty skeleton only, deferred).
 
@@ -60,9 +62,9 @@ Phase 0 is considered complete when:
 
 ## 8) Exit gate (approval checklist)
 
-- [ ] Objective is approved.
-- [ ] Scope is approved.
-- [ ] Out-of-scope boundaries are approved.
-- [ ] Inputs/assumptions are approved.
-- [ ] DoD and risks are approved.
-- [ ] Authorization granted to draft `TDD_F0.md`.
+- [x] Objective is approved.
+- [x] Scope is approved.
+- [x] Out-of-scope boundaries are approved.
+- [x] Inputs/assumptions are approved.
+- [x] DoD and risks are approved.
+- [x] Authorization granted to draft `TDD_F0.md`.
