@@ -3,7 +3,7 @@
 > Phase: 2  
 > Track: **Letsfix-first** (`brand`) with stable domain semantics for future generic profile  
 > Status: Draft for review  
-> Source: `lf_specs/phase_2_definition.md`
+> Source: `lf_specs_definition/phase_2_definition.md`
 
 ## 1) Test objective
 
@@ -26,7 +26,7 @@ Validate that ticket domain behavior is semantically stable, permission-safe, an
 
 ## 4) Assumptions
 
-- `lf_specs/phase_2_definition.md` approved.
+- `lf_specs_definition/phase_2_definition.md` approved.
 - Role baseline remains fixed for this phase.
 - Native Dolibarr Ticket remains the baseline object model.
 - Domain semantics must not depend on profile labels.
@@ -167,7 +167,7 @@ Validate that ticket domain behavior is semantically stable, permission-safe, an
 
 ### Entry gate
 
-- `lf_specs/phase_2_definition.md` approved.
+- `lf_specs_definition/phase_2_definition.md` approved.
 - Scope and assumptions confirmed.
 
 ### Exit gate

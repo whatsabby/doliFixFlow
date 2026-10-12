@@ -1,0 +1,5 @@
+*.sql
+PROJECT_MEMORY.md
+/vendor/
+/.phpunit.cache/
+.phpunit.result.cache

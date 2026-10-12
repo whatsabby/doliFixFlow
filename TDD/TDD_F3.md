@@ -3,7 +3,7 @@
 > Phase: 3  
 > Track: **Letsfix-first** (`brand`) with deterministic API behavior  
 > Status: Draft for review  
-> Source: `lf_specs/phase_3_definition.md`
+> Source: `lf_specs_definition/phase_3_definition.md`
 
 ## 1) Test objective
 
@@ -25,7 +25,7 @@ Validate that write APIs are idempotent, contracts are stable, and authorization
 
 ## 4) Assumptions
 
-- `lf_specs/phase_3_definition.md` approved.
+- `lf_specs_definition/phase_3_definition.md` approved.
 - Idempotency baseline rules are accepted for this phase.
 - TTL baseline is 24h (implementation-level finalization later).
 - Internal notes must remain hidden from customer-facing endpoints.
@@ -161,7 +161,7 @@ Validate that write APIs are idempotent, contracts are stable, and authorization
 
 ### Entry gate
 
-- `lf_specs/phase_3_definition.md` approved.
+- `lf_specs_definition/phase_3_definition.md` approved.
 - Scope and assumptions confirmed.
 
 ### Exit gate

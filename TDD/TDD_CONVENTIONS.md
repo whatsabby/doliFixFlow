@@ -14,12 +14,12 @@ Each TDD file must include these lines near the top:
 - `> Phase: N`
 - `> Track: ...`
 - `> Status: ...`
-- `> Source: `lf_specs/phase_N_definition.md``
+- `> Source: `lf_specs_definition/phase_N_definition.md``
 
 ## 3) Source reference rule
 
 - The `Source` field must always reference the matching phase definition file using this exact relative pattern:
-  - `lf_specs/phase_N_definition.md`
+  - `lf_specs_definition/phase_N_definition.md`
 - Entry-gate references inside the body must use the same full path.
 
 ## 4) Minimum section structure

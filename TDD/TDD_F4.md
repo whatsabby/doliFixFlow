@@ -3,7 +3,7 @@
 > Phase: 4  
 > Track: **Letsfix-first** migration with full-history and duplicate-safe behavior  
 > Status: Draft for review  
-> Source: `lf_specs/phase_4_definition.md`
+> Source: `lf_specs_definition/phase_4_definition.md`
 
 ## 1) Test objective
 
@@ -25,7 +25,7 @@ Validate that SupportCandy migration is deterministic, resumable, and duplicate-
 
 ## 4) Assumptions
 
-- `lf_specs/phase_4_definition.md` approved.
+- `lf_specs_definition/phase_4_definition.md` approved.
 - Full historical data migration remains mandatory.
 - `dry-run` must never persist writes.
 - Re-import of identical source records must be idempotent.
@@ -156,7 +156,7 @@ Validate that SupportCandy migration is deterministic, resumable, and duplicate-
 
 ### Entry gate
 
-- `lf_specs/phase_4_definition.md` approved.
+- `lf_specs_definition/phase_4_definition.md` approved.
 - Scope and assumptions confirmed.
 
 ### Exit gate
