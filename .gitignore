@@ -2,5 +2,10 @@
 PROJECT_MEMORY.md
 /vendor/
 /.phpunit.cache/
+<<<<<<< HEAD
 .phpunit.result.cache*.sql
 PROJECT_MEMORY.md
+=======
+.phpunit.result.cache
+PROJECT_MEMORY.md
+>>>>>>> f4d68d2c77b8861b2954e83ab4e8d30b71499f9d
